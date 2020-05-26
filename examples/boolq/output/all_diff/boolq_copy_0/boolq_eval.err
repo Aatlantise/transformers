@@ -1,0 +1,259 @@
+05/21/2020 00:01:47 - WARNING - __main__ -   Process rank: 0, device: cuda:0, n_gpu: 1, distributed training: True, 16-bits training: False
+05/21/2020 00:01:47 - INFO - transformers.configuration_utils -   loading configuration file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-config.json from cache at /home-2/jmin10@jhu.edu/.cache/torch/transformers/4dad0251492946e18ac39290fcfe91b89d370fee250efe9521476438fe8ca185.7156163d5fdc189c3016baca0775ffce230789d7fa2a42ef516483e4ca884517
+05/21/2020 00:01:47 - INFO - transformers.configuration_utils -   Model config BertConfig {
+  "_num_labels": 3,
+  "architectures": [
+    "BertForMaskedLM"
+  ],
+  "attention_probs_dropout_prob": 0.1,
+  "bad_words_ids": null,
+  "bos_token_id": null,
+  "decoder_start_token_id": null,
+  "do_sample": false,
+  "early_stopping": false,
+  "eos_token_id": null,
+  "finetuning_task": "mnli",
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 768,
+  "id2label": {
+    "0": "LABEL_0",
+    "1": "LABEL_1",
+    "2": "LABEL_2"
+  },
+  "initializer_range": 0.02,
+  "intermediate_size": 3072,
+  "is_decoder": false,
+  "is_encoder_decoder": false,
+  "label2id": {
+    "LABEL_0": 0,
+    "LABEL_1": 1,
+    "LABEL_2": 2
+  },
+  "layer_norm_eps": 1e-12,
+  "length_penalty": 1.0,
+  "max_length": 20,
+  "max_position_embeddings": 512,
+  "min_length": 0,
+  "model_type": "bert",
+  "no_repeat_ngram_size": 0,
+  "num_attention_heads": 12,
+  "num_beams": 1,
+  "num_hidden_layers": 12,
+  "num_return_sequences": 1,
+  "output_attentions": false,
+  "output_hidden_states": false,
+  "pad_token_id": 0,
+  "prefix": null,
+  "pruned_heads": {},
+  "repetition_penalty": 1.0,
+  "task_specific_params": null,
+  "temperature": 1.0,
+  "top_k": 50,
+  "top_p": 1.0,
+  "torchscript": false,
+  "type_vocab_size": 2,
+  "use_bfloat16": false,
+  "use_cache": true,
+  "vocab_size": 30522,
+  "xla_device": null
+}
+
+05/21/2020 00:01:47 - INFO - transformers.configuration_utils -   loading configuration file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-config.json from cache at /home-2/jmin10@jhu.edu/.cache/torch/transformers/4dad0251492946e18ac39290fcfe91b89d370fee250efe9521476438fe8ca185.7156163d5fdc189c3016baca0775ffce230789d7fa2a42ef516483e4ca884517
+05/21/2020 00:01:47 - INFO - transformers.configuration_utils -   Model config BertConfig {
+  "_num_labels": 2,
+  "architectures": [
+    "BertForMaskedLM"
+  ],
+  "attention_probs_dropout_prob": 0.1,
+  "bad_words_ids": null,
+  "bos_token_id": null,
+  "decoder_start_token_id": null,
+  "do_sample": false,
+  "early_stopping": false,
+  "eos_token_id": null,
+  "finetuning_task": null,
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 768,
+  "id2label": {
+    "0": "LABEL_0",
+    "1": "LABEL_1"
+  },
+  "initializer_range": 0.02,
+  "intermediate_size": 3072,
+  "is_decoder": false,
+  "is_encoder_decoder": false,
+  "label2id": {
+    "LABEL_0": 0,
+    "LABEL_1": 1
+  },
+  "layer_norm_eps": 1e-12,
+  "length_penalty": 1.0,
+  "max_length": 20,
+  "max_position_embeddings": 512,
+  "min_length": 0,
+  "model_type": "bert",
+  "no_repeat_ngram_size": 0,
+  "num_attention_heads": 12,
+  "num_beams": 1,
+  "num_hidden_layers": 12,
+  "num_return_sequences": 1,
+  "output_attentions": false,
+  "output_hidden_states": false,
+  "pad_token_id": 0,
+  "prefix": null,
+  "pruned_heads": {},
+  "repetition_penalty": 1.0,
+  "task_specific_params": null,
+  "temperature": 1.0,
+  "top_k": 50,
+  "top_p": 1.0,
+  "torchscript": false,
+  "type_vocab_size": 2,
+  "use_bfloat16": false,
+  "use_cache": true,
+  "vocab_size": 30522,
+  "xla_device": null
+}
+
+05/21/2020 00:01:48 - INFO - transformers.tokenization_utils -   loading file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt from cache at /home-2/jmin10@jhu.edu/.cache/torch/transformers/26bc1ad6c0ac742e9b52263248f6d0f00068293b33709fae12320c0e35ccfbbb.542ce4285a40d23a559526243235df47c5f75c197f04f37d1a0c124c32c9a084
+05/21/2020 00:01:48 - INFO - transformers.modeling_utils -   loading weights file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-pytorch_model.bin from cache at /home-2/jmin10@jhu.edu/.cache/torch/transformers/aa1ef1aede4482d0dbcd4d52baad8ae300e60902e88fcb0bebdec09afd232066.36ca03ab34a1a5d5fa7bc3d03d55c4fa650fed07220e2eeebc06ce58d0e9a157
+05/21/2020 00:01:51 - INFO - transformers.modeling_utils -   Weights of BertForSequenceClassification not initialized from pretrained model: ['classifier.weight', 'classifier.bias']
+05/21/2020 00:01:51 - INFO - transformers.modeling_utils -   Weights from pretrained model not used in BertForSequenceClassification: ['cls.predictions.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.decoder.weight', 'cls.seq_relationship.weight', 'cls.seq_relationship.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.LayerNorm.bias']
+05/21/2020 00:01:53 - INFO - __main__ -   Training/evaluation parameters Namespace(adam_epsilon=1e-08, cache_dir=None, config_name=None, data_dir='../../../boolq_data/', device=device(type='cuda', index=0), do_eval=True, do_train=False, eval_all_checkpoints=False, evaluate_during_training=False, fp16=False, fp16_opt_level='O1', gradient_accumulation_steps=1, learning_rate=5e-05, local_rank=0, logging_steps=500, max_grad_norm=1.0, max_seq_length=128, max_steps=-1, model_name_or_path='bert-base-uncased', model_type='bert', n_gpu=1, no_cuda=False, num_train_epochs=3.0, output_dir='./boolq_save', output_mode='classification', overwrite_cache=False, overwrite_output_dir=True, per_gpu_eval_batch_size=8, per_gpu_train_batch_size=8, save_steps=500, save_total_limit=None, seed=42, task_name='mnli', tokenizer_name=None, warmup_steps=0, weight_decay=0.0)
+05/21/2020 00:01:53 - INFO - transformers.configuration_utils -   loading configuration file ./boolq_save/config.json
+05/21/2020 00:01:53 - INFO - transformers.configuration_utils -   Model config BertConfig {
+  "_num_labels": 3,
+  "architectures": [
+    "BertForSequenceClassification"
+  ],
+  "attention_probs_dropout_prob": 0.1,
+  "bad_words_ids": null,
+  "bos_token_id": null,
+  "decoder_start_token_id": null,
+  "do_sample": false,
+  "early_stopping": false,
+  "eos_token_id": null,
+  "finetuning_task": "mnli",
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 768,
+  "id2label": {
+    "0": "LABEL_0",
+    "1": "LABEL_1",
+    "2": "LABEL_2"
+  },
+  "initializer_range": 0.02,
+  "intermediate_size": 3072,
+  "is_decoder": false,
+  "is_encoder_decoder": false,
+  "label2id": {
+    "LABEL_0": 0,
+    "LABEL_1": 1,
+    "LABEL_2": 2
+  },
+  "layer_norm_eps": 1e-12,
+  "length_penalty": 1.0,
+  "max_length": 20,
+  "max_position_embeddings": 512,
+  "min_length": 0,
+  "model_type": "bert",
+  "no_repeat_ngram_size": 0,
+  "num_attention_heads": 12,
+  "num_beams": 1,
+  "num_hidden_layers": 12,
+  "num_return_sequences": 1,
+  "output_attentions": false,
+  "output_hidden_states": false,
+  "pad_token_id": 0,
+  "prefix": null,
+  "pruned_heads": {},
+  "repetition_penalty": 1.0,
+  "task_specific_params": null,
+  "temperature": 1.0,
+  "top_k": 50,
+  "top_p": 1.0,
+  "torchscript": false,
+  "type_vocab_size": 2,
+  "use_bfloat16": false,
+  "use_cache": true,
+  "vocab_size": 30522,
+  "xla_device": null
+}
+
+05/21/2020 00:01:53 - INFO - transformers.tokenization_utils -   Model name './boolq_save' not found in model shortcut name list (bert-base-uncased, bert-large-uncased, bert-base-cased, bert-large-cased, bert-base-multilingual-uncased, bert-base-multilingual-cased, bert-base-chinese, bert-base-german-cased, bert-large-uncased-whole-word-masking, bert-large-cased-whole-word-masking, bert-large-uncased-whole-word-masking-finetuned-squad, bert-large-cased-whole-word-masking-finetuned-squad, bert-base-cased-finetuned-mrpc, bert-base-german-dbmdz-cased, bert-base-german-dbmdz-uncased, bert-base-finnish-cased-v1, bert-base-finnish-uncased-v1, bert-base-dutch-cased). Assuming './boolq_save' is a path, a model identifier, or url to a directory containing tokenizer files.
+05/21/2020 00:01:53 - INFO - transformers.tokenization_utils -   Didn't find file ./boolq_save/added_tokens.json. We won't load it.
+05/21/2020 00:01:53 - INFO - transformers.tokenization_utils -   loading file ./boolq_save/vocab.txt
+05/21/2020 00:01:53 - INFO - transformers.tokenization_utils -   loading file None
+05/21/2020 00:01:53 - INFO - transformers.tokenization_utils -   loading file ./boolq_save/special_tokens_map.json
+05/21/2020 00:01:53 - INFO - transformers.tokenization_utils -   loading file ./boolq_save/tokenizer_config.json
+05/21/2020 00:01:54 - INFO - __main__ -   Evaluate the following checkpoints: ['./boolq_save']
+05/21/2020 00:01:54 - INFO - transformers.configuration_utils -   loading configuration file ./boolq_save/config.json
+05/21/2020 00:01:54 - INFO - transformers.configuration_utils -   Model config BertConfig {
+  "_num_labels": 3,
+  "architectures": [
+    "BertForSequenceClassification"
+  ],
+  "attention_probs_dropout_prob": 0.1,
+  "bad_words_ids": null,
+  "bos_token_id": null,
+  "decoder_start_token_id": null,
+  "do_sample": false,
+  "early_stopping": false,
+  "eos_token_id": null,
+  "finetuning_task": "mnli",
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 768,
+  "id2label": {
+    "0": "LABEL_0",
+    "1": "LABEL_1",
+    "2": "LABEL_2"
+  },
+  "initializer_range": 0.02,
+  "intermediate_size": 3072,
+  "is_decoder": false,
+  "is_encoder_decoder": false,
+  "label2id": {
+    "LABEL_0": 0,
+    "LABEL_1": 1,
+    "LABEL_2": 2
+  },
+  "layer_norm_eps": 1e-12,
+  "length_penalty": 1.0,
+  "max_length": 20,
+  "max_position_embeddings": 512,
+  "min_length": 0,
+  "model_type": "bert",
+  "no_repeat_ngram_size": 0,
+  "num_attention_heads": 12,
+  "num_beams": 1,
+  "num_hidden_layers": 12,
+  "num_return_sequences": 1,
+  "output_attentions": false,
+  "output_hidden_states": false,
+  "pad_token_id": 0,
+  "prefix": null,
+  "pruned_heads": {},
+  "repetition_penalty": 1.0,
+  "task_specific_params": null,
+  "temperature": 1.0,
+  "top_k": 50,
+  "top_p": 1.0,
+  "torchscript": false,
+  "type_vocab_size": 2,
+  "use_bfloat16": false,
+  "use_cache": true,
+  "vocab_size": 30522,
+  "xla_device": null
+}
+
+05/21/2020 00:01:54 - INFO - transformers.modeling_utils -   loading weights file ./boolq_save/pytorch_model.bin
+05/21/2020 00:01:58 - INFO - __main__ -   Loading features from cached file ../../../boolq_data/cached_dev_bert-base-uncased_128_mnli
+05/21/2020 00:01:58 - INFO - __main__ -   ***** Running evaluation  *****
+05/21/2020 00:01:58 - INFO - __main__ -     Num examples = 3270
+05/21/2020 00:01:58 - INFO - __main__ -     Batch size = 8
+Evaluating:   0%|          | 0/409 [00:00<?, ?it/s]Evaluating:   1%|          | 3/409 [00:00<00:16, 24.61it/s]Evaluating:   1%|▏         | 6/409 [00:00<00:16, 25.01it/s]Evaluating:   2%|▏         | 9/409 [00:00<00:15, 25.72it/s]Evaluating:   3%|▎         | 12/409 [00:00<00:15, 26.28it/s]Evaluating:   4%|▎         | 15/409 [00:00<00:14, 26.68it/s]Evaluating:   4%|▍         | 18/409 [00:00<00:14, 26.99it/s]Evaluating:   5%|▌         | 21/409 [00:00<00:14, 27.21it/s]Evaluating:   6%|▌         | 24/409 [00:00<00:14, 27.38it/s]Evaluating:   7%|▋         | 27/409 [00:00<00:13, 27.50it/s]Evaluating:   7%|▋         | 30/409 [00:01<00:13, 27.59it/s]Evaluating:   8%|▊         | 33/409 [00:01<00:13, 27.65it/s]Evaluating:   9%|▉         | 36/409 [00:01<00:13, 27.65it/s]Evaluating:  10%|▉         | 39/409 [00:01<00:13, 27.67it/s]Evaluating:  10%|█         | 42/409 [00:01<00:13, 27.70it/s]Evaluating:  11%|█         | 45/409 [00:01<00:13, 27.72it/s]Evaluating:  12%|█▏        | 48/409 [00:01<00:13, 27.69it/s]Evaluating:  12%|█▏        | 51/409 [00:01<00:12, 27.69it/s]Evaluating:  13%|█▎        | 54/409 [00:01<00:12, 27.74it/s]Evaluating:  14%|█▍        | 57/409 [00:02<00:12, 27.77it/s]Evaluating:  15%|█▍        | 60/409 [00:02<00:12, 27.78it/s]Evaluating:  15%|█▌        | 63/409 [00:02<00:12, 27.78it/s]Evaluating:  16%|█▌        | 66/409 [00:02<00:12, 27.77it/s]Evaluating:  17%|█▋        | 69/409 [00:02<00:12, 27.76it/s]Evaluating:  18%|█▊        | 72/409 [00:02<00:12, 27.76it/s]Evaluating:  18%|█▊        | 75/409 [00:02<00:12, 27.75it/s]Evaluating:  19%|█▉        | 78/409 [00:02<00:11, 27.73it/s]Evaluating:  20%|█▉        | 81/409 [00:02<00:11, 27.74it/s]Evaluating:  21%|██        | 84/409 [00:03<00:11, 27.74it/s]Evaluating:  21%|██▏       | 87/409 [00:03<00:11, 27.73it/s]Evaluating:  22%|██▏       | 90/409 [00:03<00:11, 27.74it/s]Evaluating:  23%|██▎       | 93/409 [00:03<00:11, 27.74it/s]Evaluating:  23%|██▎       | 96/409 [00:03<00:11, 27.73it/s]Evaluating:  24%|██▍       | 99/409 [00:03<00:11, 27.73it/s]Evaluating:  25%|██▍       | 102/409 [00:03<00:11, 27.72it/s]Evaluating:  26%|██▌       | 105/409 [00:03<00:10, 27.72it/s]Evaluating:  26%|██▋       | 108/409 [00:03<00:10, 27.72it/s]Evaluating:  27%|██▋       | 111/409 [00:04<00:10, 27.73it/s]Evaluating:  28%|██▊       | 114/409 [00:04<00:10, 27.73it/s]Evaluating:  29%|██▊       | 117/409 [00:04<00:10, 27.74it/s]Evaluating:  29%|██▉       | 120/409 [00:04<00:10, 27.74it/s]Evaluating:  30%|███       | 123/409 [00:04<00:10, 27.73it/s]Evaluating:  31%|███       | 126/409 [00:04<00:10, 27.72it/s]Evaluating:  32%|███▏      | 129/409 [00:04<00:10, 27.73it/s]Evaluating:  32%|███▏      | 132/409 [00:04<00:09, 27.72it/s]Evaluating:  33%|███▎      | 135/409 [00:04<00:09, 27.74it/s]Evaluating:  34%|███▎      | 138/409 [00:04<00:09, 27.75it/s]Evaluating:  34%|███▍      | 141/409 [00:05<00:09, 27.75it/s]Evaluating:  35%|███▌      | 144/409 [00:05<00:09, 27.72it/s]Evaluating:  36%|███▌      | 147/409 [00:05<00:09, 27.72it/s]Evaluating:  37%|███▋      | 150/409 [00:05<00:09, 27.72it/s]Evaluating:  37%|███▋      | 153/409 [00:05<00:09, 27.71it/s]Evaluating:  38%|███▊      | 156/409 [00:05<00:09, 27.70it/s]Evaluating:  39%|███▉      | 159/409 [00:05<00:09, 27.71it/s]Evaluating:  40%|███▉      | 162/409 [00:05<00:08, 27.71it/s]Evaluating:  40%|████      | 165/409 [00:05<00:08, 27.71it/s]Evaluating:  41%|████      | 168/409 [00:06<00:08, 27.73it/s]Evaluating:  42%|████▏     | 171/409 [00:06<00:08, 27.73it/s]Evaluating:  43%|████▎     | 174/409 [00:06<00:08, 27.74it/s]Evaluating:  43%|████▎     | 177/409 [00:06<00:08, 27.75it/s]Evaluating:  44%|████▍     | 180/409 [00:06<00:08, 27.75it/s]Evaluating:  45%|████▍     | 183/409 [00:06<00:08, 27.74it/s]Evaluating:  45%|████▌     | 186/409 [00:06<00:08, 27.74it/s]Evaluating:  46%|████▌     | 189/409 [00:06<00:07, 27.74it/s]Evaluating:  47%|████▋     | 192/409 [00:06<00:07, 27.74it/s]Evaluating:  48%|████▊     | 195/409 [00:07<00:07, 27.76it/s]Evaluating:  48%|████▊     | 198/409 [00:07<00:07, 27.78it/s]Evaluating:  49%|████▉     | 201/409 [00:07<00:07, 27.79it/s]Evaluating:  50%|████▉     | 204/409 [00:07<00:07, 27.82it/s]Evaluating:  51%|█████     | 207/409 [00:07<00:07, 27.83it/s]Evaluating:  51%|█████▏    | 210/409 [00:07<00:07, 27.86it/s]Evaluating:  52%|█████▏    | 213/409 [00:07<00:07, 27.87it/s]Evaluating:  53%|█████▎    | 216/409 [00:07<00:06, 27.89it/s]Evaluating:  54%|█████▎    | 219/409 [00:07<00:06, 27.88it/s]Evaluating:  54%|█████▍    | 222/409 [00:08<00:06, 27.89it/s]Evaluating:  55%|█████▌    | 225/409 [00:08<00:06, 27.89it/s]Evaluating:  56%|█████▌    | 228/409 [00:08<00:06, 27.87it/s]Evaluating:  56%|█████▋    | 231/409 [00:08<00:06, 27.84it/s]Evaluating:  57%|█████▋    | 234/409 [00:08<00:06, 27.81it/s]Evaluating:  58%|█████▊    | 237/409 [00:08<00:06, 27.80it/s]Evaluating:  59%|█████▊    | 240/409 [00:08<00:06, 27.77it/s]Evaluating:  59%|█████▉    | 243/409 [00:08<00:05, 27.77it/s]Evaluating:  60%|██████    | 246/409 [00:08<00:05, 27.76it/s]Evaluating:  61%|██████    | 249/409 [00:08<00:05, 27.76it/s]Evaluating:  62%|██████▏   | 252/409 [00:09<00:05, 27.76it/s]Evaluating:  62%|██████▏   | 255/409 [00:09<00:05, 27.76it/s]Evaluating:  63%|██████▎   | 258/409 [00:09<00:05, 27.77it/s]Evaluating:  64%|██████▍   | 261/409 [00:09<00:05, 27.75it/s]Evaluating:  65%|██████▍   | 264/409 [00:09<00:05, 27.76it/s]Evaluating:  65%|██████▌   | 267/409 [00:09<00:05, 27.75it/s]Evaluating:  66%|██████▌   | 270/409 [00:09<00:05, 27.76it/s]Evaluating:  67%|██████▋   | 273/409 [00:09<00:04, 27.75it/s]Evaluating:  67%|██████▋   | 276/409 [00:09<00:04, 27.77it/s]Evaluating:  68%|██████▊   | 279/409 [00:10<00:04, 27.79it/s]Evaluating:  69%|██████▉   | 282/409 [00:10<00:04, 27.80it/s]Evaluating:  70%|██████▉   | 285/409 [00:10<00:04, 27.81it/s]Evaluating:  70%|███████   | 288/409 [00:10<00:04, 27.82it/s]Evaluating:  71%|███████   | 291/409 [00:10<00:04, 27.78it/s]Evaluating:  72%|███████▏  | 294/409 [00:10<00:04, 27.74it/s]Evaluating:  73%|███████▎  | 297/409 [00:10<00:04, 27.76it/s]Evaluating:  73%|███████▎  | 300/409 [00:10<00:03, 27.76it/s]Evaluating:  74%|███████▍  | 303/409 [00:10<00:03, 27.74it/s]Evaluating:  75%|███████▍  | 306/409 [00:11<00:03, 27.73it/s]Evaluating:  76%|███████▌  | 309/409 [00:11<00:03, 27.73it/s]Evaluating:  76%|███████▋  | 312/409 [00:11<00:03, 27.73it/s]Evaluating:  77%|███████▋  | 315/409 [00:11<00:03, 27.74it/s]Evaluating:  78%|███████▊  | 318/409 [00:11<00:03, 27.73it/s]Evaluating:  78%|███████▊  | 321/409 [00:11<00:03, 27.74it/s]Evaluating:  79%|███████▉  | 324/409 [00:11<00:03, 27.75it/s]Evaluating:  80%|███████▉  | 327/409 [00:11<00:02, 27.77it/s]Evaluating:  81%|████████  | 330/409 [00:11<00:02, 27.77it/s]Evaluating:  81%|████████▏ | 333/409 [00:12<00:02, 27.79it/s]Evaluating:  82%|████████▏ | 336/409 [00:12<00:02, 27.80it/s]Evaluating:  83%|████████▎ | 339/409 [00:12<00:02, 27.81it/s]Evaluating:  84%|████████▎ | 342/409 [00:12<00:02, 27.81it/s]Evaluating:  84%|████████▍ | 345/409 [00:12<00:02, 27.82it/s]Evaluating:  85%|████████▌ | 348/409 [00:12<00:02, 27.82it/s]Evaluating:  86%|████████▌ | 351/409 [00:12<00:02, 27.79it/s]Evaluating:  87%|████████▋ | 354/409 [00:12<00:01, 27.78it/s]Evaluating:  87%|████████▋ | 357/409 [00:12<00:01, 27.77it/s]Evaluating:  88%|████████▊ | 360/409 [00:12<00:01, 27.78it/s]Evaluating:  89%|████████▉ | 363/409 [00:13<00:01, 27.79it/s]Evaluating:  89%|████████▉ | 366/409 [00:13<00:01, 27.81it/s]Evaluating:  90%|█████████ | 369/409 [00:13<00:01, 27.83it/s]Evaluating:  91%|█████████ | 372/409 [00:13<00:01, 27.85it/s]Evaluating:  92%|█████████▏| 375/409 [00:13<00:01, 27.87it/s]Evaluating:  92%|█████████▏| 378/409 [00:13<00:01, 27.89it/s]Evaluating:  93%|█████████▎| 381/409 [00:13<00:01, 27.88it/s]Evaluating:  94%|█████████▍| 384/409 [00:13<00:00, 27.88it/s]Evaluating:  95%|█████████▍| 387/409 [00:13<00:00, 27.86it/s]Evaluating:  95%|█████████▌| 390/409 [00:14<00:00, 27.84it/s]Evaluating:  96%|█████████▌| 393/409 [00:14<00:00, 27.80it/s]Evaluating:  97%|█████████▋| 396/409 [00:14<00:00, 27.78it/s]Evaluating:  98%|█████████▊| 399/409 [00:14<00:00, 27.74it/s]Evaluating:  98%|█████████▊| 402/409 [00:14<00:00, 27.73it/s]Evaluating:  99%|█████████▉| 405/409 [00:14<00:00, 27.73it/s]Evaluating: 100%|█████████▉| 408/409 [00:14<00:00, 27.74it/s]Evaluating: 100%|██████████| 409/409 [00:14<00:00, 27.74it/s]
+05/21/2020 00:02:13 - INFO - __main__ -   ***** Eval results  *****
+05/21/2020 00:02:13 - INFO - __main__ -     acc = 0.7489296636085627
