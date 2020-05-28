@@ -47,6 +47,9 @@ from transformers import glue_convert_examples_to_features as convert_examples_t
 from transformers import glue_output_modes as output_modes
 from transformers import glue_processors as processors
 
+from hans_processors import glue_output_modes as hans_output_modes
+from hans_processors import glue_processors as hans_processors
+from hans_processors import hans_convert_examples_to_features
 
 try:
     from torch.utils.tensorboard import SummaryWriter
@@ -248,6 +251,7 @@ def train(args, train_dataset, model, tokenizer):
                     # logger.info("Saving optimizer and scheduler states to %s", output_dir)
 
                     # Save preds and evaluations instead of model checkpoint
+                    prefix = str(global_step)
                     evaluate_mnli(args, model, tokenizer, prefix=prefix)
                     evaluate_hans(args, model, tokenizer, prefix=prefix)
             if args.max_steps > 0 and global_step > args.max_steps:
@@ -328,7 +332,7 @@ def evaluate_mnli(args, model, tokenizer, prefix=""):
 
         filename = str(prefix) + "_boolq.txt"
 
-        output_eval_file = os.path.join(eval_output_dir, prefix, filename)
+        output_eval_file = os.path.join(eval_output_dir, filename)
         with open(output_eval_file, "w") as writer:
             logger.info("***** Eval results {} *****".format(prefix))
             for key in sorted(result.keys()):
@@ -338,7 +342,7 @@ def evaluate_mnli(args, model, tokenizer, prefix=""):
     return results
 
 def evaluate_hans(args, model, tokenizer, prefix=""):
-    eval_task_names = (args.task_name,)
+    eval_task_names = ('hans',)
     eval_outputs_dirs = (args.output_dir,)
 
     results = {}
@@ -350,7 +354,7 @@ def evaluate_hans(args, model, tokenizer, prefix=""):
 
         args.eval_batch_size = args.per_gpu_eval_batch_size * max(1, args.n_gpu)
         # Note that DistributedSampler samples randomly
-        eval_sampler = DataLoader(eval_dataset, sampler=eval_sampler, batch_size=args.eval_batch_size)
+        eval_sampler = SequentialSampler(eval_dataset)
         eval_dataloader = DataLoader(eval_dataset, sampler=eval_sampler, batch_size=args.eval_batch_size)
 
         # multi-gpu eval
@@ -411,12 +415,15 @@ def evaluate_hans(args, model, tokenizer, prefix=""):
 def load_and_cache_examples(args, task, tokenizer, evaluate=False, hans=False):
     if args.local_rank not in [-1, 0] and not evaluate:
         torch.distributed.barrier()  # Make sure only the first process in distributed training process the dataset, and the others will use the cache
-    if hans == True:
-        data_dir = args.hans_dir
+    if hans:
+        data_dir = "../../../hans"
+        task = 'hans'
+        processor = hans_processors[task]()
+        output_mode = hans_output_modes[task]
     else:
         data_dir = args.data_dir
-    processor = processors[task]()
-    output_mode = output_modes[task]
+        processor = processors[task]()
+        output_mode = output_modes[task]
     # Load data features from cache or dataset file
     cached_features_file = os.path.join(
         data_dir,
@@ -427,6 +434,10 @@ def load_and_cache_examples(args, task, tokenizer, evaluate=False, hans=False):
             str(task),
         ),
     )
+
+    if hans:
+        label_list = processor.get_labels()
+
     if os.path.exists(cached_features_file) and not args.overwrite_cache:
         logger.info("Loading features from cached file %s", cached_features_file)
         features = torch.load(cached_features_file)
@@ -440,10 +451,21 @@ def load_and_cache_examples(args, task, tokenizer, evaluate=False, hans=False):
             processor.get_dev_examples(data_dir) if evaluate else processor.get_train_examples(data_dir)
         )
 
-
-        features = convert_examples_to_features(
-            examples, tokenizer, max_length=args.max_seq_length, label_list=label_list, output_mode=output_mode,
-        )
+        if hans:
+            features = hans_convert_examples_to_features(
+                examples,
+                tokenizer,
+                label_list=label_list,
+                max_length-args.max_seq_length,
+                output_mode=output_mode,
+                pad_on_left=bool(args.model_type in ["xlnet"]),
+                pad_token=tokenizer.pad_token_id,
+                pad_token_segment_id=tokenizer.pad_token_type_id
+            )
+        else:
+            features = convert_examples_to_features(
+                examples, tokenizer, max_length=args.max_seq_length, label_list=label_list, output_mode=output_mode,
+            )
         if args.local_rank in [-1, 0]:
             logger.info("Saving features into cached file %s", cached_features_file)
             torch.save(features, cached_features_file)
@@ -460,8 +482,13 @@ def load_and_cache_examples(args, task, tokenizer, evaluate=False, hans=False):
     elif output_mode == "regression":
         all_labels = torch.tensor([f.label for f in features], dtype=torch.float)
 
-    dataset = TensorDataset(all_input_ids, all_attention_mask, all_token_type_ids, all_labels)
-    return dataset
+    if hans == True:
+        all_pair_ids = torch.tensor([int(f.pairID) for f in features], dtype=torch.long)
+        dataset = TensorDataset(all_input_ids, all_attention_mask, all_token_type_ids, all_labels, all_pair_ids)
+        return dataset, label_list
+    else:
+        dataset = TensorDataset(all_input_ids, all_attention_mask, all_token_type_ids, all_labels)
+        return dataset
 
 
 @dataclass
