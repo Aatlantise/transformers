@@ -15,4 +15,11 @@ module load cuda
 module load anaconda
 conda activate huggingface
 
+# this works on MARCC, work on Lustre /scratch
+#mkdir -p /scratch/users/$USER/tensorflow_run
+#cd /scratch/users/$USER/tensorflow_run
+
+export MASTER_PORT=$(shuf -i8000-9999 -n1)
 bash boolq.sh
+#bash run_pl.sh
+

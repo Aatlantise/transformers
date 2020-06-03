@@ -19,6 +19,7 @@ conda activate huggingface
 #mkdir -p /scratch/users/$USER/tensorflow_run
 #cd /scratch/users/$USER/tensorflow_run
 
+export MASTER_PORT=$(shuf -i8000-9999 -n1)
 bash boolq.sh
 #bash run_pl.sh
 

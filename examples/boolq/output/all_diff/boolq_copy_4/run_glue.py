@@ -47,6 +47,9 @@ from transformers import glue_convert_examples_to_features as convert_examples_t
 from transformers import glue_output_modes as output_modes
 from transformers import glue_processors as processors
 
+from hans_processors import glue_output_modes as hans_output_modes
+from hans_processors import glue_processors as hans_processors
+from hans_processors import hans_convert_examples_to_features
 
 try:
     from torch.utils.tensorboard import SummaryWriter
@@ -229,24 +232,28 @@ def train(args, train_dataset, model, tokenizer):
                         tb_writer.add_scalar(key, value, global_step)
                     print(json.dumps({**logs, **{"step": global_step}}))
 
-                if args.local_rank in [-1, 0] and args.save_steps > 0 and global_step % args.save_steps == 0:
+                if args.local_rank in [-1, 0] and args.save_steps > 0 and (global_step % args.save_steps == 0 or global_step == 1):
                     # Save model checkpoint
-                    output_dir = os.path.join(args.output_dir, "checkpoint-{}".format(global_step))
-                    if not os.path.exists(output_dir):
-                        os.makedirs(output_dir)
-                    model_to_save = (
-                        model.module if hasattr(model, "module") else model
-                    )  # Take care of distributed/parallel training
-                    model_to_save.save_pretrained(output_dir)
-                    tokenizer.save_pretrained(output_dir)
+                    # output_dir = os.path.join(args.output_dir, "checkpoint-{}".format(global_step))
+                    # if not os.path.exists(output_dir):
+                    #     os.makedirs(output_dir)
+                    # model_to_save = (
+                    #     model.module if hasattr(model, "module") else model
+                    # )  # Take care of distributed/parallel training
+                    # model_to_save.save_pretrained(output_dir)
+                    # tokenizer.save_pretrained(output_dir)
 
-                    torch.save(args, os.path.join(output_dir, "training_args.bin"))
-                    logger.info("Saving model checkpoint to %s", output_dir)
+                    # torch.save(args, os.path.join(output_dir, "training_args.bin"))
+                    # logger.info("Saving model checkpoint to %s", output_dir)
 
-                    torch.save(optimizer.state_dict(), os.path.join(output_dir, "optimizer.pt"))
-                    torch.save(scheduler.state_dict(), os.path.join(output_dir, "scheduler.pt"))
-                    logger.info("Saving optimizer and scheduler states to %s", output_dir)
+                    # torch.save(optimizer.state_dict(), os.path.join(output_dir, "optimizer.pt"))
+                    # torch.save(scheduler.state_dict(), os.path.join(output_dir, "scheduler.pt"))
+                    # logger.info("Saving optimizer and scheduler states to %s", output_dir)
 
+                    # Save preds and evaluations instead of model checkpoint
+                    prefix = str(global_step)
+                    evaluate_mnli(args, model, tokenizer, prefix=prefix)
+                    evaluate_hans(args, model, tokenizer, prefix=prefix)
             if args.max_steps > 0 and global_step > args.max_steps:
                 epoch_iterator.close()
                 break
@@ -254,13 +261,16 @@ def train(args, train_dataset, model, tokenizer):
             train_iterator.close()
             break
 
+    prefix = str(global_step)
+    evaluate_mnli(args, model, tokenizer, prefix=prefix)
+    evaluate_hans(args, model, tokenizer, prefix=prefix)
     if args.local_rank in [-1, 0]:
         tb_writer.close()
 
     return global_step, tr_loss / global_step
 
-
-def evaluate(args, model, tokenizer, prefix=""):
+#modify to handle MNLI evaluation at checkpoint
+def evaluate_mnli(args, model, tokenizer, prefix=""):
     # Loop to handle MNLI double evaluation (matched, mis-matched)
     # Modified because BoolQ does not have mis-matched dataset.
     #eval_task_names = ("mnli", "mnli-mm") if args.task_name == "mnli" else (args.task_name,)
@@ -323,7 +333,9 @@ def evaluate(args, model, tokenizer, prefix=""):
         result = compute_metrics(eval_task, preds, out_label_ids)
         results.update(result)
 
-        output_eval_file = os.path.join(eval_output_dir, prefix, "eval_results.txt")
+        filename = "boolq_" + str(prefix) + ".txt"
+
+        output_eval_file = os.path.join(eval_output_dir, filename)
         with open(output_eval_file, "w") as writer:
             logger.info("***** Eval results {} *****".format(prefix))
             for key in sorted(result.keys()):
@@ -332,16 +344,92 @@ def evaluate(args, model, tokenizer, prefix=""):
 
     return results
 
+def evaluate_hans(args, model, tokenizer, prefix=""):
+    eval_task_names = ('hans',)
+    eval_outputs_dirs = (args.output_dir,)
 
-def load_and_cache_examples(args, task, tokenizer, evaluate=False):
+    results = {}
+    for eval_task, eval_output_dir in zip(eval_task_names, eval_outputs_dirs):
+        eval_dataset, label_list = load_and_cache_examples(args, eval_task, tokenizer, evaluate=True, hans=True)
+
+        if not os.path.exists(eval_output_dir) and args.local_rank in [-1, 0]:
+            os.makedirs(eval_output_dir)
+
+        args.eval_batch_size = args.per_gpu_eval_batch_size * max(1, args.n_gpu)
+        # Note that DistributedSampler samples randomly
+        eval_sampler = SequentialSampler(eval_dataset)
+        eval_dataloader = DataLoader(eval_dataset, sampler=eval_sampler, batch_size=args.eval_batch_size)
+
+        # multi-gpu eval
+        if args.n_gpu > 1:
+            model = torch.nn.DataParallel(model)
+        
+        # Eval!
+        logger.info("***** Running evaluation {} *****".format(prefix))
+        logger.info("  Num examples = %d", len(eval_dataset))
+        logger.info("  Batch size = %d", args.eval_batch_size)
+        eval_loss = 0.0
+        nb_eval_steps = 0
+        preds = None
+        out_label_ids = None
+        for batch in tqdm(eval_dataloader, desc="Evaluating"):
+            model.eval()
+            batch = tuple(t.to(args.device) for t in batch)
+
+            with torch.no_grad():
+                inputs = {"input_ids": batch[0], "attention_mask": batch[1], "labels": batch[3]}
+                if args.model_type != "distilbert":
+                    inputs["token_type_ids"] = (
+                        batch[2] if args.model_type in ["bert", "xlnet"] else None
+                        )  # XLM, DistilBERT and RoBERTa don't use segment_ids
+                outputs = model(**inputs)
+                tmp_eval_loss, logits = outputs[:2]
+
+                eval_loss += tmp_eval_loss.mean().item()
+            nb_eval_steps += 1
+            if preds is None:
+                preds = logits.detach().cpu().numpy()
+                out_label_ids = inputs["labels"].detach().cpu().numpy()
+                pair_ids = batch[4].detach().cpu().numpy()
+            else:
+                preds = np.append(preds,logits.detach().cpu().numpy(), axis=0)
+                out_label_ids = np.append(out_label_ids, inputs["labels"].detach().cpu().numpy(), axis=0)
+                pair_ids = np.append(pair_ids, batch[4].detach().cpu().numpy(), axis=0)
+
+        eval_loss = eval_loss / nb_eval_steps
+        if args.output_mode == "classification":
+            preds = np.argmax(preds, axis=1)
+        elif args.output_mode == "regression":
+            preds = np.squeeze(preds)
+
+        filename = "hans_" + str(prefix) + ".txt"
+        output_eval_file = os.path.join(eval_output_dir, filename)
+        with open(output_eval_file, "w") as writer:
+            writer.write("pairID,gold_label\n")
+            for pid, pred in zip(pair_ids, preds):
+                writer.write("ex" + str(pid) + "," + label_list[int(pred)] + "\n")
+
+    return results
+
+
+
+
+
+def load_and_cache_examples(args, task, tokenizer, evaluate=False, hans=False):
     if args.local_rank not in [-1, 0] and not evaluate:
         torch.distributed.barrier()  # Make sure only the first process in distributed training process the dataset, and the others will use the cache
-
-    processor = processors[task]()
-    output_mode = output_modes[task]
+    if hans:
+        data_dir = "../../../hans"
+        task = 'hans'
+        processor = hans_processors[task]()
+        output_mode = hans_output_modes[task]
+    else:
+        data_dir = args.data_dir
+        processor = processors[task]()
+        output_mode = output_modes[task]
     # Load data features from cache or dataset file
     cached_features_file = os.path.join(
-        args.data_dir,
+        data_dir,
         "cached_{}_{}_{}_{}".format(
             "dev" if evaluate else "train",
             list(filter(None, args.model_name_or_path.split("/"))).pop(),
@@ -349,21 +437,38 @@ def load_and_cache_examples(args, task, tokenizer, evaluate=False):
             str(task),
         ),
     )
+
+    if hans:
+        label_list = processor.get_labels()
+
     if os.path.exists(cached_features_file) and not args.overwrite_cache:
         logger.info("Loading features from cached file %s", cached_features_file)
         features = torch.load(cached_features_file)
     else:
-        logger.info("Creating features from dataset file at %s", args.data_dir)
+        logger.info("Creating features from dataset file at %s", data_dir)
         label_list = processor.get_labels()
         if task in ["mnli", "mnli-mm"] and args.model_type in ["roberta", "xlmroberta"]:
             # HACK(label indices are swapped in RoBERTa pretrained model)
             label_list[1], label_list[2] = label_list[2], label_list[1]
         examples = (
-            processor.get_dev_examples(args.data_dir) if evaluate else processor.get_train_examples(args.data_dir)
+            processor.get_dev_examples(data_dir) if evaluate else processor.get_train_examples(data_dir)
         )
-        features = convert_examples_to_features(
-            examples, tokenizer, max_length=args.max_seq_length, label_list=label_list, output_mode=output_mode,
-        )
+
+        if hans:
+            features = hans_convert_examples_to_features(
+                examples,
+                tokenizer,
+                label_list=label_list,
+                max_length=args.max_seq_length,
+                output_mode=output_mode,
+                pad_on_left=bool(args.model_type in ["xlnet"]),
+                pad_token=tokenizer.pad_token_id,
+                pad_token_segment_id=tokenizer.pad_token_type_id
+            )
+        else:
+            features = convert_examples_to_features(
+                examples, tokenizer, max_length=args.max_seq_length, label_list=label_list, output_mode=output_mode,
+            )
         if args.local_rank in [-1, 0]:
             logger.info("Saving features into cached file %s", cached_features_file)
             torch.save(features, cached_features_file)
@@ -380,8 +485,13 @@ def load_and_cache_examples(args, task, tokenizer, evaluate=False):
     elif output_mode == "regression":
         all_labels = torch.tensor([f.label for f in features], dtype=torch.float)
 
-    dataset = TensorDataset(all_input_ids, all_attention_mask, all_token_type_ids, all_labels)
-    return dataset
+    if hans == True:
+        all_pair_ids = torch.tensor([int(f.pairID) for f in features], dtype=torch.long)
+        dataset = TensorDataset(all_input_ids, all_attention_mask, all_token_type_ids, all_labels, all_pair_ids)
+        return dataset, label_list
+    else:
+        dataset = TensorDataset(all_input_ids, all_attention_mask, all_token_type_ids, all_labels)
+        return dataset
 
 
 @dataclass
@@ -418,12 +528,11 @@ class DataProcessingArguments:
         metadata={
             "help": "The maximum total input sequence length after tokenization. Sequences longer "
             "than this will be truncated, sequences shorter will be padded."
-        },
+        }
     )
     overwrite_cache: bool = field(
         default=False, metadata={"help": "Overwrite the cached training and evaluation sets"}
     )
-
 
 def main():
     parser = HfArgumentParser((ModelArguments, DataProcessingArguments, TrainingArguments))
@@ -549,15 +658,23 @@ def main():
             )
             logging.getLogger("transformers.modeling_utils").setLevel(logging.WARN)  # Reduce logging
         logger.info("Evaluate the following checkpoints: %s", checkpoints)
-        for checkpoint in checkpoints:
-            global_step = checkpoint.split("-")[-1] if len(checkpoints) > 1 else ""
-            prefix = checkpoint.split("/")[-1] if checkpoint.find("checkpoint") != -1 else ""
+        
+        cumul_eval_file = os.path.join(args.output_dir, "cumul_results.txt")
+        with open(cumul_eval_file, "w") as writer:
+            for checkpoint in checkpoints:
+                global_step = checkpoint.split("-")[-1] if len(checkpoints) > 1 else ""
+                prefix = checkpoint.split("/")[-1] if checkpoint.find("checkpoint") != -1 else ""
+                print(prefix)
+                model = AutoModelForSequenceClassification.from_pretrained(checkpoint)
+                model.to(args.device)
+                result = evaluate_mnli(args, model, tokenizer, prefix=prefix)
+                result = dict((k + "_{}".format(global_step), v) for k, v in result.items())
+                print(result)
+                results.update(result)
 
-            model = AutoModelForSequenceClassification.from_pretrained(checkpoint)
-            model.to(args.device)
-            result = evaluate(args, model, tokenizer, prefix=prefix)
-            result = dict((k + "_{}".format(global_step), v) for k, v in result.items())
-            results.update(result)
+                for key, value in result.items():
+                    writer.write("%s  = %s\n" % (key, value))
+
 
     return results
 

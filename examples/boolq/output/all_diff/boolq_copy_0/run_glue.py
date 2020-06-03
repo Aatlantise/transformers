@@ -232,7 +232,7 @@ def train(args, train_dataset, model, tokenizer):
                         tb_writer.add_scalar(key, value, global_step)
                     print(json.dumps({**logs, **{"step": global_step}}))
 
-                if args.local_rank in [-1, 0] and args.save_steps > 0 and global_step % args.save_steps == 0:
+                if args.local_rank in [-1, 0] and args.save_steps > 0 and (global_step % args.save_steps == 0 or global_step == 1):
                     # Save model checkpoint
                     # output_dir = os.path.join(args.output_dir, "checkpoint-{}".format(global_step))
                     # if not os.path.exists(output_dir):
@@ -261,6 +261,9 @@ def train(args, train_dataset, model, tokenizer):
             train_iterator.close()
             break
 
+    prefix = str(global_step)
+    evaluate_mnli(args, model, tokenizer, prefix=prefix)
+    evaluate_hans(args, model, tokenizer, prefix=prefix)
     if args.local_rank in [-1, 0]:
         tb_writer.close()
 
@@ -330,7 +333,7 @@ def evaluate_mnli(args, model, tokenizer, prefix=""):
         result = compute_metrics(eval_task, preds, out_label_ids)
         results.update(result)
 
-        filename = str(prefix) + "_boolq.txt"
+        filename = "boolq_" + str(prefix) + ".txt"
 
         output_eval_file = os.path.join(eval_output_dir, filename)
         with open(output_eval_file, "w") as writer:
@@ -399,7 +402,7 @@ def evaluate_hans(args, model, tokenizer, prefix=""):
         elif args.output_mode == "regression":
             preds = np.squeeze(preds)
 
-        filename = str(prefix) + "_hans.txt"
+        filename = "hans_" + str(prefix) + ".txt"
         output_eval_file = os.path.join(eval_output_dir, filename)
         with open(output_eval_file, "w") as writer:
             writer.write("pairID,gold_label\n")
@@ -456,7 +459,7 @@ def load_and_cache_examples(args, task, tokenizer, evaluate=False, hans=False):
                 examples,
                 tokenizer,
                 label_list=label_list,
-                max_length-args.max_seq_length,
+                max_length=args.max_seq_length,
                 output_mode=output_mode,
                 pad_on_left=bool(args.model_type in ["xlnet"]),
                 pad_token=tokenizer.pad_token_id,
@@ -525,13 +528,10 @@ class DataProcessingArguments:
         metadata={
             "help": "The maximum total input sequence length after tokenization. Sequences longer "
             "than this will be truncated, sequences shorter will be padded."
-        },
+        }
     )
     overwrite_cache: bool = field(
         default=False, metadata={"help": "Overwrite the cached training and evaluation sets"}
-    )
-    hans_dir: str = field(
-        metadata={"help": "The HANS data dir. Should contain the .tsv files for HANS evaluation."}
     )
 
 def main():
@@ -542,8 +542,6 @@ def main():
     # but soon, we'll keep distinct sets of args, with a cleaner separation of concerns.
     args = argparse.Namespace(**vars(model_args), **vars(dataprocessing_args), **vars(training_args))
 
-    parser.add_argument("--hans_dir", default=None, type=str,
-                        help = "HANS data directory location for external performance evaluation")
     if (
         os.path.exists(args.output_dir)
         and os.listdir(args.output_dir)

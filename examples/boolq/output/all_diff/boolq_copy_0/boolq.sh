@@ -1,10 +1,11 @@
 export DATA_DIR=./boolq_data
 export OUTPUT_DIR=./boolq_save
-export HANS_DIR=../../../hans
-
+export MASTER_PORT=$(shuf -i8000-9999 -n1)
+module load python
 module load cuda
 
 python -m torch.distributed.launch \
+    --master_port $MASTER_PORT \
     --nproc_per_node 1 run_glue.py \
     --model_type bert \
     --model_name_or_path bert-base-uncased \
@@ -18,4 +19,3 @@ python -m torch.distributed.launch \
     --output_dir $OUTPUT_DIR \
     --overwrite_output_dir \
     --seed 28 \
-    --hans_dir $HANS_DIR/ \
