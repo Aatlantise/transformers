@@ -1,4 +1,4 @@
-export DATA_DIR=path/to/MNLI/dataset
+export DATA_DIR=./mnli_data
 export OUTPUT_DIR=./mnli_save
 export SEED = your_seed
 
