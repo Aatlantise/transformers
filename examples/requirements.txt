@@ -7,3 +7,4 @@ sacrebleu
 rouge-score
 tensorflow_datasets
 pytorch-lightning==0.7.3  # April 10, 2020 release
+absl-py==0.10 # For compatibility with tensorflow-metadata
