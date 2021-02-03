@@ -3,7 +3,9 @@
 This Huggingface Transformers-forked framework was used to run experiments for Junghyun Min<sup>1</sup>'s master's thesis <i>The roots and effects of heuristics in NLI and QA models</i>, produce in collaboration with Tom McCoy<sup>1</sup> and Tal Linzen<sup>2</sup>. This framework was developed on Nafise Sadat Moosavi<sup>3</sup>'s original implementation of HANS evaluation on Huggingface Transformers.
 
 <sup>1</sup>Department of Cognitive Science, Johns Hopkins University, Baltimore, MD
+
 <sup>2</sup>Department of Linguistics; Department of Data Science, New York University, New York, NY
+
 <sup>3</sup>Department of Computer Science, Technische Universität Darmstadt, Darmstadt, Germany
 
 
@@ -18,7 +20,9 @@ We walk through the Docker setup and installation in this section.
 First, download the repository. The Docker image needs to be in the root directory of the repository.
 
 `mkdir transformers && cd transformers`
+
 `git clone https://www.github.com/aatlantise/transformers`
+
 `cp docker/transformer-pytorch-gpu/Dockerfile ./`
 
 Then, we build an image. We will name the image `transformers-docker`.
@@ -59,6 +63,7 @@ We include figures for one iteration for each task for your reference, located i
 ## Running your experiments
 
 To run your experiment, simply configure `mnli.sh` or `boolq.sh` with your parameters and run ```bash mnli.sh``` or ```bash boolq.sh```. Your model will be run, and at every checkpoint, the model's evaluation results will be saved.
+
 If your GPU environment uses Slurm, feel free to use the `mnli_finetune.scr` or `boolq_finetune.scr` scripts.
 
 
