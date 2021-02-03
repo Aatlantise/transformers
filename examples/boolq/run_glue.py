@@ -419,7 +419,7 @@ def load_and_cache_examples(args, task, tokenizer, evaluate=False, hans=False):
     if args.local_rank not in [-1, 0] and not evaluate:
         torch.distributed.barrier()  # Make sure only the first process in distributed training process the dataset, and the others will use the cache
     if hans:
-        data_dir = "../../../hans"
+        data_dir = "./hans"
         task = 'hans'
         processor = hans_processors[task]()
         output_mode = hans_output_modes[task]

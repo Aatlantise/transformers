@@ -20,7 +20,7 @@ for line in fi:
         parts = line.strip().split(",")
         guess_dict[parts[0]] = format_label(parts[1])
 
-fi = open("/home-2/jmin10@jhu.edu/scratch/huggingface/transformers/examples/mnli/hans/dev_matched.tsv", "r")
+fi = open("../hans/dev_matched.tsv", "r")
 
 correct_dict = {}
 first = True

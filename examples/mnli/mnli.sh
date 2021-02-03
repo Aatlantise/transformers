@@ -1,8 +1,8 @@
 export DATA_DIR=./mnli_data
 export OUTPUT_DIR=./mnli_save
-export SEED = your_seed
+export SEED=42
 
-module load cuda
+#module load cuda
 
 python -m torch.distributed.launch \
     --nproc_per_node 1 run_glue.py \
@@ -16,4 +16,5 @@ python -m torch.distributed.launch \
     --learning_rate 2e-5 \
     --num_train_epochs 3.0 \
     --output_dir $OUTPUT_DIR \
-    --seed $SEED
+    --seed $SEED \
+    --overwrite-output-dir
