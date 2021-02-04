@@ -50,7 +50,7 @@ You're ready to run your experiments! If you run into a versioning / GPU problem
 
 ## Training and in-distribution evaluation
 
-We provide two tasks: natural language inference (NLI) and question answering (QA). We use the [MultiNLI](https://github.com/nyu-mll/multiNLI) and the [BoolQ](https://github.com/google-research-datasets/boolean-questions) datasets for training and in-distribution evaluation, respectively. The datasets, cached and tsv, can be found in `/examples/[task-name]/[task-name]_data`.
+We provide two tasks: natural language inference (NLI) and question answering (QA). We use the [MultiNLI](https://github.com/nyu-mll/multiNLI) and the [BoolQ](https://github.com/google-research-datasets/boolean-questions) datasets for training and in-distribution evaluation, respectively. The dataset for BoolQ, cached and tsv, can be found in `/examples/boolq/boolq_data`, while the MNLI dataset must be downloaded using `curl https://dl.fbaipublicfiles.com/glue/data/WNLI.zip -o MNLI.zip`, then unzipped.
 
 ## Out-of-distribution evaluation
 
@@ -65,6 +65,8 @@ We include figures for one iteration for each task for your reference, located i
 To run your experiment, simply configure `mnli.sh` or `boolq.sh` with your parameters and run ```bash mnli.sh``` or ```bash boolq.sh```. Your model will be run, and at every checkpoint, the model's evaluation results will be saved.
 
 If your GPU environment uses Slurm, feel free to use the `mnli_finetune.scr` or `boolq_finetune.scr` scripts.
+
+On a k80 GPU, the BoolQ training will take a couple hours, while MNLI training may take between 12 and 18 hours. Note that the experiment only produces test set accuracies as `[task-name]_[step-count].txt` and HANS label outputs as `hans_[step-count].txt`. Run `python evaluate_heur_output.py hans_[step-count].txt && mv formattedFile.txt hansres_[step-count].txt` to produce HANS performances on categories and subcases. 
 
 
 If you have any questions, please feel free to contact us at jmin10@jhu.edu, tom.mccoy@jhu.edu, and linzen@nyu.edu.

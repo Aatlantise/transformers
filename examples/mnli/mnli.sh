@@ -4,7 +4,7 @@ export SEED=42
 
 #module load cuda
 
-python -m torch.distributed.launch \
+python3 -m torch.distributed.launch \
     --nproc_per_node 1 run_glue.py \
     --model_type bert \
     --model_name_or_path bert-base-uncased \
@@ -17,4 +17,4 @@ python -m torch.distributed.launch \
     --num_train_epochs 3.0 \
     --output_dir $OUTPUT_DIR \
     --seed $SEED \
-    --overwrite-output-dir
+    --overwrite_output_dir
